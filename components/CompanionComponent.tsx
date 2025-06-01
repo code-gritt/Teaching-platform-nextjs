@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn, configureAssistant, getSubjectColor } from "@/lib/utils";
-// import { vapi } from "@/lib/vapi.sdk";
+import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import soundwaves from "@/constants/soundwaves.json";
@@ -42,48 +42,48 @@ const CompanionComponent = ({
     }
   }, [isSpeaking, lottieRef]);
 
-  //   useEffect(() => {
-  //     const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
+  useEffect(() => {
+    const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
 
-  //     const onCallEnd = () => {
-  //       setCallStatus(CallStatus.FINISHED);
-  //       addToSessionHistory(companionId);
-  //     };
+    const onCallEnd = () => {
+      setCallStatus(CallStatus.FINISHED);
+      addToSessionHistory(companionId);
+    };
 
-  //     const onMessage = (message: Message) => {
-  //       if (message.type === "transcript" && message.transcriptType === "final") {
-  //         const newMessage = { role: message.role, content: message.transcript };
-  //         setMessages((prev) => [newMessage, ...prev]);
-  //       }
-  //     };
+    const onMessage = (message: Message) => {
+      if (message.type === "transcript" && message.transcriptType === "final") {
+        const newMessage = { role: message.role, content: message.transcript };
+        setMessages((prev) => [newMessage, ...prev]);
+      }
+    };
 
-  //     const onSpeechStart = () => setIsSpeaking(true);
-  //     const onSpeechEnd = () => setIsSpeaking(false);
+    const onSpeechStart = () => setIsSpeaking(true);
+    const onSpeechEnd = () => setIsSpeaking(false);
 
-  //     const onError = (error: Error) => console.log("Error", error);
+    const onError = (error: Error) => console.log("Error", error);
 
-  //     vapi.on("call-start", onCallStart);
-  //     vapi.on("call-end", onCallEnd);
-  //     vapi.on("message", onMessage);
-  //     vapi.on("error", onError);
-  //     vapi.on("speech-start", onSpeechStart);
-  //     vapi.on("speech-end", onSpeechEnd);
+    vapi.on("call-start", onCallStart);
+    vapi.on("call-end", onCallEnd);
+    vapi.on("message", onMessage);
+    vapi.on("error", onError);
+    vapi.on("speech-start", onSpeechStart);
+    vapi.on("speech-end", onSpeechEnd);
 
-  //     return () => {
-  //       vapi.off("call-start", onCallStart);
-  //       vapi.off("call-end", onCallEnd);
-  //       vapi.off("message", onMessage);
-  //       vapi.off("error", onError);
-  //       vapi.off("speech-start", onSpeechStart);
-  //       vapi.off("speech-end", onSpeechEnd);
-  //     };
-  //   }, []);
+    return () => {
+      vapi.off("call-start", onCallStart);
+      vapi.off("call-end", onCallEnd);
+      vapi.off("message", onMessage);
+      vapi.off("error", onError);
+      vapi.off("speech-start", onSpeechStart);
+      vapi.off("speech-end", onSpeechEnd);
+    };
+  }, []);
 
-  //   const toggleMicrophone = () => {
-  //     const isMuted = vapi.isMuted();
-  //     vapi.setMuted(!isMuted);
-  //     setIsMuted(!isMuted);
-  //   };
+  const toggleMicrophone = () => {
+    const isMuted = vapi.isMuted();
+    vapi.setMuted(!isMuted);
+    setIsMuted(!isMuted);
+  };
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
@@ -98,10 +98,10 @@ const CompanionComponent = ({
     vapi.start(configureAssistant(voice, style), assistantOverrides);
   };
 
-  //   const handleDisconnect = () => {
-  //     setCallStatus(CallStatus.FINISHED);
-  //     vapi.stop();
-  //   };
+  const handleDisconnect = () => {
+    setCallStatus(CallStatus.FINISHED);
+    vapi.stop();
+  };
 
   return (
     <section className="flex flex-col h-[70vh]">
@@ -161,7 +161,7 @@ const CompanionComponent = ({
           </div>
           <button
             className="btn-mic"
-            // onClick={toggleMicrophone}
+            onClick={toggleMicrophone}
             disabled={callStatus !== CallStatus.ACTIVE}
           >
             <Image
@@ -180,9 +180,9 @@ const CompanionComponent = ({
               callStatus === CallStatus.ACTIVE ? "bg-red-700" : "bg-primary",
               callStatus === CallStatus.CONNECTING && "animate-pulse"
             )}
-            // onClick={
-            //   callStatus === CallStatus.ACTIVE ? handleDisconnect : handleCall
-            // }
+            onClick={
+              callStatus === CallStatus.ACTIVE ? handleDisconnect : handleCall
+            }
           >
             {callStatus === CallStatus.ACTIVE
               ? "End Session"
